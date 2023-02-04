@@ -4,6 +4,7 @@
   <title>Universal Video Maximizer - Options</title>
   <meta charset="utf-8">
   <link rel="stylesheet" type="text/css" href="chota.css">
+  <link rel="stylesheet" type="text/css" href="options_edit_blacklist.css">
 </head>
 <body class="dark">
 
@@ -19,10 +20,30 @@
     </fieldset>
 
     <fieldset>
+      <button id="blacklist-open-btn">Edit blacklist</button>
+      <div id="blacklist-popup" class="blacklist-popup">
+        <div class="blacklist-popup-content">
+          <p>
+            <p>
+              Example:<br>
+              Attribute Name: id<br>
+              Blacklist Value: /^ignoreThisID/i
+            </p>
+            <button id="blacklist-add-btn">Add to blacklist</button>
+            <button id="blacklist-remove-btn">Remove from blacklist</button>
+          </p>
+          <div id="blacklist-textbox-area"></div>
+          <button id="blacklist-save-btn">Save</button>
+          <button id="blacklist-cancel-btn">Cancel</button>
+        </div>
+      </div>
+    </fieldset>
+
+    <fieldset>
       <a href="help.html">See more tricks here</a>
     </fieldset>
 
-    <fieldset
+    <fieldset>
     <p>
       Report problems via
       <a href="https://github.com/trophygeek/universalvideomaximizer/issues" target="_blank" rel="noreferrer">GitHub
@@ -36,5 +57,6 @@
   </form>
 </div>
 <script src="options.js"></script>
+<script src="options_edit_blacklist.js"></script>
 </body>
 </html>

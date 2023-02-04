@@ -1,3 +1,4 @@
+(async () => {
 try { // scope and prevent errors from leaking out to page.
   const FULL_DEBUG          = true;
   const DEBUG_ENABLED       = FULL_DEBUG;
@@ -62,6 +63,12 @@ try { // scope and prevent errors from leaking out to page.
   const SCALESTRING_WIDTH  = '100%'; // "calc(100vw)";
   const SCALESTRING_HEIGHT = '100%'; // "calc(100vh)";
   const SCALESTRING        = '100%';
+
+  const SETTINGS_STORAGE_KEY = 'settings';
+  const SETTINGS_BLACKLIST_ELEMENTS = 'blacklist-elems';
+  let blacklist = [];
+  const currSettings = await chrome?.storage?.local?.get(SETTINGS_STORAGE_KEY);
+  blacklist = currSettings[SETTINGS_STORAGE_KEY][SETTINGS_BLACKLIST_ELEMENTS];
 
   const logerr = (...args) => {
     if (DEBUG_ENABLED === false) {
@@ -1196,6 +1203,32 @@ try { // scope and prevent errors from leaking out to page.
   }
 
   /**
+   *
+   * @param elem {Node}
+   */
+  ifInBlacklist = (elem) => {
+    console.log('elemmmmmmmmmmmmm')
+    if (!window.asd) window.asd = []
+    window.asd.push(elem)
+    console.log(elem)
+    if (!blacklist) {
+      return false
+    }
+    
+    for (const blacklistItem of blacklist) {
+      const attr = safeGetAttribute(elem, blacklistItem[0]);
+      const regex = blacklistItem[1].match(/^\/(.*?)\/([gim]*)$/);
+
+      if (!regex)
+        continue
+      if (attr.match(new RegExp(regex[1], regex[2]))) {
+        trace(`matched blacklist item '${blacklistItem[1]}' in attr '${blacklistItem[0]}'. skipping`);
+        return true;
+      }
+    }
+  }
+
+  /**
    * @constructor
    */
   function ElemMatcherClass() {
@@ -1220,6 +1253,10 @@ try { // scope and prevent errors from leaking out to page.
       // try to not match ads on the page
       if (DO_NOT_MATCH_ADS && seemsLikeAd(elem)) {
         return false;
+      }
+
+      if (ifInBlacklist(elem)) {
+        return false
       }
 
       const score = this._getElemMatchScore(elem);
@@ -1958,3 +1995,4 @@ try { // scope and prevent errors from leaking out to page.
   // eslint-disable-next-line no-console
   console.error('videomax extension error', err, err.stack);
 }
+})();

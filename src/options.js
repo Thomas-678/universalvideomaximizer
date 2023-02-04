@@ -42,15 +42,24 @@ const getFeatureToogleZoom = async () => {
  */
 const setFeatureToogleZoom = async (value) => {
   try {
-    await chrome.storage.local.set(
-      { [SETTINGS_STORAGE_KEY]: { [OLD_TOGGLE_ZOOM_BEHAVIOR]: value } },
-    );
+    const currSettings = await chrome?.storage?.local?.get(SETTINGS_STORAGE_KEY);
+    currSettings[SETTINGS_STORAGE_KEY][OLD_TOGGLE_ZOOM_BEHAVIOR]= value;
+    await chrome.storage.local.set(currSettings);
   } catch (err) {
     console.error(err);
   }
 };
 
 document.addEventListener('DOMContentLoaded', async () => {
+  try {
+    const currSettings = await chrome?.storage?.local?.get(SETTINGS_STORAGE_KEY);
+    if (!currSettings[SETTINGS_STORAGE_KEY]) {
+      currSettings[SETTINGS_STORAGE_KEY] = {}
+      await chrome.storage.local.set(currSettings);
+    }
+  } catch (err) {
+    console.error(err);
+  }
   try {
     document.addEventListener('change', async (_e) => {
       // save options
